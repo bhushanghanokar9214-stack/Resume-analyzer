@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Resume Analyzer</title>
+<style>
+  body { font-family: Arial; text-align:center; margin:50px; }
+  input, button { margin: 10px; padding: 10px; font-size: 16px; }
+  #result { margin-top: 20px; }
+</style>
+</head>
+<body>
+<h1>AI Resume Analyzer</h1>
+<input type="file" id="resumeFile" accept=".pdf,.docx">
+<br>
+<button onclick="analyzeResume()">Analyze Resume</button>
+<div id="result"></div>
+
+<script>
+async function analyzeResume() {
+    const file = document.getElementById('resumeFile').files[0];
+    if (!file) { alert('Please upload a file'); return; }
+
+    const formData = new FormData();
+    formData.append('resume', file);
+
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = "Analyzing...";
+
+    const response = await fetch('/api/analyze', {
+        method: 'POST',
+        body: formData
+    });
+    const data = await response.json();
+
+    resultDiv.innerHTML = `<h3>Score: ${data.score}</h3>
+                           <p>Suggestions: ${data.suggestions}</p>`;
+}
+</script>
+</body>
+</html>
